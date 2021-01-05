@@ -1,0 +1,49 @@
+.App {
+    text-align: center;
+    background-color: #282c34;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.App__blur {
+    /* filter: blur(5px); */
+    background-color: black;
+}
+
+.App__header {
+    /* //откуда это? */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.App__title {
+    font-size: 47px;
+}
+
+.App__subtitle {
+    margin-left: 40px;
+    text-align: left;
+    line-height: 40px;
+}
+
+.App-link {
+    color: #61dafb;
+}
+
+.App__image-wrapper {
+    display: flex;
+    width: 80%;
+}
+
+.App__description {
+    background-color: #484c53;
+    margin: 50px 0;
+    padding: 40px;
+}

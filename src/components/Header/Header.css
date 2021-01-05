@@ -1,0 +1,26 @@
+.header__control-panel {
+	display: flex;
+	opacity: 0.9;
+	width: 100%;
+	background-color: #484c53;
+	justify-content: flex-end;
+	padding: 0 40px;
+  }
+
+  .header__button {
+	cursor: pointer;
+	padding: 20px 5px;
+  }
+
+  .header__button_divider::after {
+	content: '';
+	width: 1px;
+	height: 80%;
+	border-right: 2px white solid;
+	padding-left: 10px;
+  }
+
+  .header__image {
+	width: 77%;
+	pointer-events: none;
+  }
