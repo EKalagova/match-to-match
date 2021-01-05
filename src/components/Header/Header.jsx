@@ -13,6 +13,7 @@ export default function Header() {
 
 	return (
 		<>
+		{/* <Questionary></Questionary> */}
 			<header className="header">
 				<div className="header__control-panel">
 					<div

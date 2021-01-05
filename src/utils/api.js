@@ -4,7 +4,7 @@ export function fetchData(url, ms, data) {
             reject(new Error('TIMEOUT'))
         }, ms)
 
-        fetch(url, {
+        fetch('http://localhost:8080' + url, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -30,7 +30,7 @@ export function postData(url, ms, data) {
             reject(new Error('TIMEOUT')) //будет ли здесь ломаться?
         }, ms)
         console.log('postData')
-        fetch(url, {
+        fetch('http://localhost:8080' + url, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
