@@ -38,9 +38,10 @@ export function postData(url, ms, data) {
                 },
                 body: JSON.stringify(data)
             })
-            .finally(() => {
+            .finally((req) => {
                 console.log('clearTimeout');
                 clearTimeout(timer)
+                return req;
             })
     })
 }

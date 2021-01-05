@@ -8,7 +8,7 @@ import Reviews from '../Reviews/Reviews';
 import Header from '../Header/Header';
 import './Form.css';
 
-const b = block('App');
+const b = block('form');
 
 function Form() {
 

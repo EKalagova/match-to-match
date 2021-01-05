@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { QUESTIONNAIRE_URL, TIMEOUT } from '../../utils/consts';
+import { LOGIN_URL, TIMEOUT } from '../../utils/consts';
 import { postData } from '../../utils/api';
 
 import ModalWindow from '../ModalWindow/ModalWindow';
@@ -17,7 +17,7 @@ export default function LoginForm({ onClick }) {
 
   useEffect(() => {
     if (isFormComplete) {
-      postData(QUESTIONNAIRE_URL, TIMEOUT)
+      postData(LOGIN_URL, TIMEOUT)
         .then(response => {
           if (response.status !== 200) {
               throw(response.status);
@@ -26,6 +26,7 @@ export default function LoginForm({ onClick }) {
       .catch(err => {
           console.log('here')
           setIsError(true)
+          setFormComplete(false)
       })
       }
 
@@ -34,42 +35,43 @@ export default function LoginForm({ onClick }) {
   return (
     <ModalWindow onClick={onClick}>
         <div className={b()}>
-              <form class="registration" id="registration">
-            <h1>Registration Form</h1>
+          <form className={b('form')} id="registration">
+            <h1 className={b('title')}>Вход</h1>
 
-            <label for="username">
-              <span>Username</span>
+            <label htmlFor="email">
+              <span>Почта</span>
 
-              <input type="text" id="username" minlength="3" required />
+              <input
+                type="text"
+                id="email"
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" //учесть пробелы
+                minLength="3"
+                autoComplete="email"
+                required
+              />
 
-              <ul class="input-requirements">
-                <li>At least 3 characters long</li>
-                <li>Must only contain letters and numbers (no special characters)</li>
+              <ul className={b('requirements')}>
+                <li>Не менее 2 знаков</li>
+                <li>Содержит только буквы или цифры</li>
               </ul>
             </label>
 
-            <label for="password">
-              <span>Password</span>
+            <label htmlFor="password">
+              <span>Пароль</span>
 
-              <input type="password" id="password" maxlength="100" minlength="8" required />
-
-              <ul class="input-requirements">
-                <li>At least 8 characters long (and less than 100 characters)</li>
-                <li>Contains at least 1 number</li>
-                <li>Contains at least 1 lowercase letter</li>
-                <li>Contains at least 1 uppercase letter</li>
-                <li>Contains a special character (e.g. @ !)</li>
-              </ul>
-            </label>
-
-            <label for="password_repeat">
-              <span>Repeat Password</span>
-              <input type="password" id="password_repeat" maxlength="100" minlength="8" required />
+              <input
+                type="password"
+                id="password"
+                autoComplete="new-password"
+                maxLength="30"
+                minLength="8"
+                required
+              />
             </label>
 
             <br />
 
-            <input type="submit"/>
+            <input type="submit" onSubmit={() => console.log('onSubmit')}/>
 
           </form>
         </div>

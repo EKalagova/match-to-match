@@ -1,0 +1,45 @@
+.login {
+    color: rgb(86 85 85);
+}
+
+.login__title {
+    font-size: 2.5rem;
+    padding: 15px 20px;
+    background-color: rgba(255, 219, 58, 0.3);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login__form {
+    background-color: #fff;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-bottom: 20px;
+    box-shadow: 1px 1px 5px 0px rgba(0, 0, 0, 0.3);
+    border-bottom: 5px solid #ffdb3a;
+}
+
+.login__requirements {
+    font-size: 12px;
+    font-style: italic;
+    text-align: left;
+    list-style: disc;
+    list-style-position: inside;
+    max-width: 400px;
+    margin: 10px auto;
+    color: rgb(150, 150, 150);
+}
+
+.login__requirements li.invalid {
+    color: #e74c3c;
+}
+
+.login__requirements li.valid {
+    color: #2ecc71;
+}
+
+.login__requirements li.valid:after {
+    display: inline-block;
+    padding-left: 10px;
+    content: "\2713";
+}
