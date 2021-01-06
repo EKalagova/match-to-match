@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { QUESTIONNAIRE } from '../../utils/titles';
-import { REGISTRATION_URL, TIMEOUT } from '../../utils/consts';
+import { REGISTRATION_BASE_URL, LOGIN_URL, EMAIL_URL, NEW_USER_URL, TIMEOUT } from '../../utils/consts';
 import { postData } from '../../utils/api';
 
 import ModalWindow from '../ModalWindow/ModalWindow';
@@ -29,7 +28,7 @@ export default function Registration({ onClick }) {
         password: password.trim(),
       };
   
-      postData(REGISTRATION_URL, TIMEOUT, data)
+      postData(`${REGISTRATION_BASE_URL}${NEW_USER_URL}`, TIMEOUT, data)
         .then(response => {
           if (response.status !== 200) {
               throw(response.status);
@@ -48,7 +47,7 @@ export default function Registration({ onClick }) {
     if (email !== lastCheckedEmail) {
 
       setLastCheckedEmail(email)
-      postData(REGISTRATION_URL, TIMEOUT, { email })
+      postData(`${REGISTRATION_BASE_URL}${EMAIL_URL}`, TIMEOUT, { email })
           .then(response => {
             console.log('response.status')
             if (response.status !== 200) {
