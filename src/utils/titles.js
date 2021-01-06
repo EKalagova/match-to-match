@@ -10,6 +10,56 @@ export const TITLES = {
     registrationButtonName: 'Регистрация',
 }
 
+export const REQUIREMENTS = {
+    login: [{
+            rule: 'Не менее 2 знаков',
+            isValid: value => (value.length >= 2),
+        },
+        {
+            rule: 'Содержит только буквы или цифры',
+            isValid: value => !!value.match(/^[a-zA-Zа-яА-Я0-9]+$/),
+        }
+    ],
+    email: [{
+            rule: 'Пользователь с такой почтой уже существует',
+            isValid: value => value,
+        },
+        {
+            rule: 'Не менее 2 знаков',
+            isValid: value => (value.length >= 2),
+        },
+        {
+            rule: 'Содержит только буквы или цифры',
+            isValid: value => !!value.match(/^[a-zA-Zа-яА-Я0-9]+$/),
+        },
+    ],
+    password: [{
+            rule: 'Длина должна быть более 8 знаков и менее 30',
+            isValid: value => (value.length >= 8 && value.length <= 30),
+        },
+        {
+            rule: 'Содержит как минимум 1 цифру',
+            isValid: value => !!value.match(/[0-9]/),
+        },
+        {
+            rule: 'Содержит как минимум 1 маленькую букву',
+            isValid: value => !!value.match(/[a-z]/),
+        },
+        {
+            rule: 'Содержит как минимум 1 большую букву',
+            isValid: value => !!value.match(/[A-Z]/),
+        },
+        {
+            rule: 'Содержит специальный знак (e.g. @ !)',
+            isValid: value => !!value.match(/@/),
+        },
+    ],
+    passwordRepeat: [{
+        rule: 'Пароль должен совпадать с введённым ранее',
+        isValid: value => value,
+    }, ],
+};
+
 export const REVIEWS = [{
         name: 'Андрей',
         photo: image1,

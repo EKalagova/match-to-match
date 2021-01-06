@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { REGISTRATION_BASE_URL, LOGIN_URL, EMAIL_URL, NEW_USER_URL, TIMEOUT } from '../../utils/consts';
+import { REQUIREMENTS } from '../../utils/titles';
 import { postData } from '../../utils/api';
 
 import ModalWindow from '../ModalWindow/ModalWindow';
@@ -10,9 +11,10 @@ import './Registration.css';
 const b = block('regist');
 
 export default function Registration({ onClick }) {
-  const [email, setEmail] = useState('')
-  const [login, setLogin] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState({ value: '', isValid: false })
+  const [login, setLogin] = useState({ value: '', isValid: false })
+  const [password, setPassword] = useState({ value: '', isValid: false })
+  const [passwordRepeat, setPasswordRepeated] = useState({ value: '', isValid: false })
   const [lastCheckedEmail, setLastCheckedEmail] = useState('')
   const [isFormComplete, setFormComplete] = useState(false)
   const [isCheckedEmailError, setIsCheckedEmailError] = useState(false)
@@ -23,16 +25,14 @@ export default function Registration({ onClick }) {
     if (isFormComplete) {
       console.log('if')
       const data = {
-        email: email.trim(),
-        login: login.trim(),
-        password: password.trim(),
+        email: email.value.trim(),
+        login: login.value.trim(),
+        password: password.value,
       };
   
       postData(`${REGISTRATION_BASE_URL}${NEW_USER_URL}`, TIMEOUT, data)
         .then(response => {
-          if (response.status !== 200) {
-              throw(response.status);
-          }
+         
       })
       .catch(err => {
           console.log('here')
@@ -42,18 +42,17 @@ export default function Registration({ onClick }) {
 
   }, [isFormComplete])
 
-  function checkEmailDuplicates(e) {
+  function checkDuplicates(e, url) {
     const email = e.target.value.trim().toLowerCase();
     if (email !== lastCheckedEmail) {
 
       setLastCheckedEmail(email)
-      postData(`${REGISTRATION_BASE_URL}${EMAIL_URL}`, TIMEOUT, { email })
+      postData(`${REGISTRATION_BASE_URL}${url}`, TIMEOUT, { email })
           .then(response => {
             console.log('response.status')
             if (response.status !== 200) {
               console.log('response.status')
                 throw(response.status);
-                
             }
         })
         .catch(err => {
@@ -64,29 +63,52 @@ export default function Registration({ onClick }) {
   }
 
   function handleEmailChange(e) {
-    setEmail(e.target.value)
+    const newValue = e.target.value;
+    setEmail({
+      value: newValue,
+      isValid: REQUIREMENTS.email.every(rule => rule.isValid(newValue)),
+    })
     console.log(e.target.value)
   }
 
   function handlePasswordChange(e) {
-    setPassword(e.target.value)
+    const newValue = e.target.value;
+    setPassword(
+      {
+        value: newValue,
+        isValid: REQUIREMENTS.password.every(rule => rule.isValid(newValue)),
+      }
+    )
+    console.log(e.target.value)
+  }
+
+  function handleLoginChange(e) {
+    const newValue = e.target.value;
+    setLogin({
+      value: newValue,
+      isValid: REQUIREMENTS.login.every(rule => rule.isValid(newValue)),
+    })
     console.log(e.target.value)
   }
 
   return (
     <ModalWindow onClick={onClick}>
+      
         <div className={b()}>
           <form className={b('form')} id="registration" onSubmit={(e) => {e.preventDefault(); setFormComplete(true)}}>
             <h1 className={b('title')}>Регистрация</h1>
 
             <label htmlFor="username">
-              <span>Логин</span>
+              <span className={b('subtitle')}>Логин</span>
 
               <input
                 type="text"
                 id="username"
-                value={login}
-                onChange={e => setLogin(e.target.value)}
+                className={b('input', { valid: login.isValid })}
+                value={login.value}
+                onChange={handleLoginChange}
+                onFocus={() => setIsCheckedEmailError(false)}
+                onBlur={e => checkDuplicates(e, LOGIN_URL)}
                 pattern="[a-zA-Zа-яА-Я0-9]{2,30}$"
                 autoComplete="username"
                 placeholder="Имя"
@@ -94,79 +116,89 @@ export default function Registration({ onClick }) {
               />
 
               <ul className={b('requirements')}>
-                <li>Не менее 2 знаков</li>
-                <li>Содержит только буквы или цифры</li>
+                {REQUIREMENTS.login.map((element, index) => (
+                  <li className={b('rule', { valid: element.isValid})} key={index}>{element.rule}</li>
+                ))}
               </ul>
             </label>
 
             <label htmlFor="email">
-              <span>Почта</span>
+              <span className={b('subtitle')}>Почта</span>
 
               <input
                 type="text"
                 id="email"
-                value={email}
+                className={b('input', { valid: email.isValid })}
+                value={email.value}
                 onChange={handleEmailChange}
                 onFocus={() => setIsCheckedEmailError(false)}
-                onBlur={checkEmailDuplicates}
+                onBlur={e => checkDuplicates(e, EMAIL_URL)}
                 placeholder="example@gmail.com"
-                //pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" //учесть пробелы
                 minLength="3"
                 autoComplete="email"
                 required
               />
               
               <ul className={b('requirements')}>
+                {REQUIREMENTS.email.map((element, index) => (
+                  <li className={b('rule', { valid: email.isValid })} key={index}>{element.rule}</li>
+                ))}
                 {isCheckedEmailError && (
                   <li>Пользователь с такой почтой уже существует</li>
                 )}
-                <li>Не менее 2 знаков</li>
-                <li>Содержит только буквы или цифры</li>
               </ul>
             </label>
 
             <label htmlFor="password">
-              <span>Пароль</span>
+              <span className={b('subtitle')}>Пароль</span>
 
               <input
                 type="password"
                 id="password"
+                className={b('input', { valid: password.isValid })}
                 autoComplete="new-password"
                 maxLength="30"
                 minLength="8"
-                value={password} //учесть пробелы
+                value={password.value} //учесть пробелы
                 onChange={handlePasswordChange}
                 required
               />
 
               <ul className={b('requirements')}>
-                <li>Длина должна быть более 8 знаков и менее 30</li>
-                <li>Содержит как минимум 1 цифру</li>
-                <li>Содержит как минимум 1 маленькую букву</li>
-                <li>Содержит как минимум 1 большую букву</li>
-                <li>Содержит специальный знак (e.g. @ !)</li>
+              {REQUIREMENTS.password.map((element, index) => (
+                  <li className={b('rule', { valid: password.isValid })} key={index} >{element.rule}</li>
+                ))}
               </ul>
             </label>
 
             <label htmlFor="password_repeat">
-              <span>Repeat Password</span>
+              <span className={b('subtitle')}>Повторите пароль</span>
               <input
+              // isValidForm: (formName, value) => this[formName].every(rule => isValid(value)),
                 type="password"
                 id="password_repeat"
+                className={b('input', { valid: passwordRepeat.value === password.value })}
                 maxLength="100"
                 minLength="8"
-                pattern={password}
+                pattern={password.value}
                 autoComplete="new-password"
                 required
               />
+
+              <ul className={b('requirements')}>
+                {REQUIREMENTS.passwordRepeat.map((element, index) => (
+                  <li className={b('rule', { valid: passwordRepeat.value === password.value })} key={index}>{element.rule}</li>
+                ))}
+              </ul>
             </label>
 
             <br />
 
-            <input type="submit"/>
+            <input type="submit" className={b('button', { valid: login.isValid && email.isValid && password.isValid && passwordRepeat.value })}/>
 
           </form>
         </div>
+
     </ModalWindow>
   )
 }
