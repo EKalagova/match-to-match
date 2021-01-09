@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
+import { block } from 'bem-cn';
+
 import { getTitle } from '../../utils/helpers'
 import Questionary from '../Questionary/Questionary';
 import Registration from '../Registration/Registration';
 import LoginForm from '../LoginForm/LoginForm';
 
 import './Header.css';
+const b = block('header');
 
 export default function Header() {
 	const [isQuestionary, setIsQuestionary] = useState(false);
@@ -14,16 +17,16 @@ export default function Header() {
 	return (
 		<>
 		{/* <Questionary></Questionary> */}
-			<header className="header">
-				<div className="header__control-panel">
+			<header className={b()}>
+				<div className={b('control-panel')}>
 					<div
-						className="header__button header__button_divider"
+						className={b('button', { divider: true })}
 						onClick={() => setIsLogin(true)}
 					>
 						{getTitle('loginButtonName')}
 					</div>
 					<div
-						className="header__button"
+						className={b('button')}
 						//onClick={onClick}
 						onClick={() => setIsRegistration(true)}
 					>
