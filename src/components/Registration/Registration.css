@@ -46,8 +46,8 @@
 .regist__input_valid:hover,
 .regist__input_valid:focus,
 .regist__input_valid:active {
-    border-color: #2ecc71;
-    outline-color: #2ecc71;
+    border-color: var(--main-valid-color);
+    outline-color: var(--main-valid-color);
     background-color: #fff;
     padding: 6px;
 }
@@ -75,11 +75,11 @@
 }
 
 .regist__rule {
-    color: #e74c3c;
+    color: var(--main-invalid-color);
 }
 
 .regist__rule_valid {
-    color: #2ecc71;
+    color: var(--main-valid-color);
 }
 
 .regist__rule_valid:after {
@@ -98,5 +98,5 @@
 }
 
 .regist__button_valid {
-    background-color: #2ecc71;
+    background-color: var(--main-valid-color);
 }

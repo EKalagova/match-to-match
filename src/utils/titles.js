@@ -8,6 +8,8 @@ export const TITLES = {
     loginButtonName: 'Войти',
     logoutButtonName: 'Выйти',
     registrationButtonName: 'Регистрация',
+    visibility: 'Сделать видимым вводимый пароль',
+    loginError: 'Неправильная почта или пароль',
 }
 
 export const REQUIREMENTS = {

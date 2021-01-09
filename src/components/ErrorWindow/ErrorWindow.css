@@ -1,0 +1,21 @@
+.error-window {
+    font-size: 12px;
+    font-style: italic;
+    margin: 18px auto;
+    max-height: 30px;
+    color: var(--main-invalid-color);
+    -webkit-transition: max-height 1s, opacity 1.3s;
+    transition: max-height 1s, opacity 1.3s;
+}
+
+.error-window_visible {
+    max-height: 700px;
+    opacity: 1;
+}
+
+.error-window__loader {
+    width: 26px;
+    height: 26px;
+    margin: auto;
+    background: center/contain url('../../images/loader.gif') no-repeat;
+}
