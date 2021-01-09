@@ -20,10 +20,11 @@ export const REQUIREMENTS = {
             isValid: value => !!value.match(/^[a-zA-Zа-яА-Я0-9]+$/),
         }
     ],
-    email: [{
-            rule: 'Пользователь с такой почтой уже существует',
-            isValid: value => value,
-        },
+    email: [
+        // {
+        //     rule: 'Пользователь с такой почтой уже существует',
+        //     isValid: value => value,
+        // },
         {
             rule: 'Не менее 2 знаков',
             isValid: value => (value.length >= 2),

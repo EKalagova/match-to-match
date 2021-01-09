@@ -52,7 +52,6 @@
     padding: 6px;
 }
 
-.regist__input:hover+.regist__requirements,
 .regist__input:active+.regist__requirements,
 .regist__input:focus+.regist__requirements {
     max-height: 700px;
@@ -94,6 +93,7 @@
     width: min-content;
     border-radius: 8px;
     border-width: 2px;
+    background-color: rgb(181 179 169 / 30%);
     transition: background-color 1s ease-out;
 }
 

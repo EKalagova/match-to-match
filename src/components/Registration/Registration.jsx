@@ -10,14 +10,30 @@ import './Registration.css';
 
 const b = block('regist');
 
+function handlerPostRequest(url, timeout, data, handler) {
+  postData(`${REGISTRATION_BASE_URL}${url}`, timeout, data)
+        .then(response => {
+          console.log('request', response)
+          handler(false)
+      })
+      .catch(err => {
+          console.log('request err', err)
+          handler(true)
+      })
+}
+
 export default function Registration({ onClick }) {
   const [email, setEmail] = useState({ value: '', isValid: false })
   const [login, setLogin] = useState({ value: '', isValid: false })
   const [password, setPassword] = useState({ value: '', isValid: false })
   const [passwordRepeat, setPasswordRepeated] = useState({ value: '', isValid: false })
+  
+  const [isDuplicateEmailError, setIsDuplicateEmailError] = useState(false)
+  const [isDuplicateLoginError, setIsDuplicateLoginError] = useState(false)
+
   const [lastCheckedEmail, setLastCheckedEmail] = useState('')
+  const [lastCheckedLogin, setLastCheckedLogin] = useState('')
   const [isFormComplete, setFormComplete] = useState(false)
-  const [isCheckedEmailError, setIsCheckedEmailError] = useState(false)
   const [isError, setIsError] = useState(false)
 
   useEffect(() => {
@@ -30,35 +46,33 @@ export default function Registration({ onClick }) {
         password: password.value,
       };
   
-      postData(`${REGISTRATION_BASE_URL}${NEW_USER_URL}`, TIMEOUT, data)
-        .then(response => {
-         
-      })
-      .catch(err => {
-          console.log('here')
-          setIsError(true)
-      })
-      }
+      handlerPostRequest(NEW_USER_URL, TIMEOUT, data, setIsError)
+    }
 
   }, [isFormComplete])
 
-  function checkDuplicates(e, url) {
+  function handleLoginChange(e) {
+    const newValue = e.target.value;
+    setLogin({
+      value: newValue,
+      isValid: REQUIREMENTS.login.every(rule => rule.isValid(newValue)),
+    })
+    console.log(e.target.value)
+  }
+
+  function checkLoginDuplicates(e, url) {
+    const login = e.target.value.trim().toLowerCase();
+    if (login && login !== lastCheckedLogin) {
+      setLastCheckedLogin(login)
+      handlerPostRequest(url, TIMEOUT, { login }, setIsDuplicateLoginError)
+    }
+  }
+
+  function checkEmailDuplicates(e, url) {
     const email = e.target.value.trim().toLowerCase();
     if (email !== lastCheckedEmail) {
-
       setLastCheckedEmail(email)
-      postData(`${REGISTRATION_BASE_URL}${url}`, TIMEOUT, { email })
-          .then(response => {
-            console.log('response.status')
-            if (response.status !== 200) {
-              console.log('response.status')
-                throw(response.status);
-            }
-        })
-        .catch(err => {
-            console.log('here')
-            setIsCheckedEmailError(true)
-        })
+      handlerPostRequest(url, TIMEOUT, { email }, setIsDuplicateEmailError)
     }
   }
 
@@ -82,15 +96,6 @@ export default function Registration({ onClick }) {
     console.log(e.target.value)
   }
 
-  function handleLoginChange(e) {
-    const newValue = e.target.value;
-    setLogin({
-      value: newValue,
-      isValid: REQUIREMENTS.login.every(rule => rule.isValid(newValue)),
-    })
-    console.log(e.target.value)
-  }
-
   return (
     <ModalWindow onClick={onClick}>
       
@@ -104,11 +109,11 @@ export default function Registration({ onClick }) {
               <input
                 type="text"
                 id="username"
-                className={b('input', { valid: login.isValid })}
+                className={b('input', { valid: login.isValid && !isDuplicateLoginError })}
                 value={login.value}
                 onChange={handleLoginChange}
-                onFocus={() => setIsCheckedEmailError(false)}
-                onBlur={e => checkDuplicates(e, LOGIN_URL)}
+                onFocus={() => setIsDuplicateLoginError(false)}
+                onBlur={e => checkLoginDuplicates(e, LOGIN_URL)}
                 pattern="[a-zA-Zа-яА-Я0-9]{2,30}$"
                 autoComplete="username"
                 placeholder="Имя"
@@ -117,8 +122,11 @@ export default function Registration({ onClick }) {
 
               <ul className={b('requirements')}>
                 {REQUIREMENTS.login.map((element, index) => (
-                  <li className={b('rule', { valid: element.isValid})} key={index}>{element.rule}</li>
+                  <li className={b('rule', { valid: element.isValid })} key={index}>{element.rule}</li>
                 ))}
+                {isDuplicateLoginError && (
+                  <li className={b('rule')}>Пользователь с таким логином уже зарегистрирован</li>
+                )}
               </ul>
             </label>
 
@@ -128,11 +136,11 @@ export default function Registration({ onClick }) {
               <input
                 type="text"
                 id="email"
-                className={b('input', { valid: email.isValid })}
+                className={b('input', { valid: email.isValid && !isDuplicateEmailError })}
                 value={email.value}
                 onChange={handleEmailChange}
-                onFocus={() => setIsCheckedEmailError(false)}
-                onBlur={e => checkDuplicates(e, EMAIL_URL)}
+                onFocus={() => setIsDuplicateEmailError(false)}
+                onBlur={e => checkEmailDuplicates(e, EMAIL_URL)}
                 placeholder="example@gmail.com"
                 minLength="3"
                 autoComplete="email"
@@ -143,7 +151,7 @@ export default function Registration({ onClick }) {
                 {REQUIREMENTS.email.map((element, index) => (
                   <li className={b('rule', { valid: email.isValid })} key={index}>{element.rule}</li>
                 ))}
-                {isCheckedEmailError && (
+                {isDuplicateEmailError && (
                   <li>Пользователь с такой почтой уже существует</li>
                 )}
               </ul>
@@ -177,7 +185,7 @@ export default function Registration({ onClick }) {
               // isValidForm: (formName, value) => this[formName].every(rule => isValid(value)),
                 type="password"
                 id="password_repeat"
-                className={b('input', { valid: passwordRepeat.value === password.value })}
+                className={b('input', { valid: passwordRepeat.value && passwordRepeat.value === password.value })}
                 maxLength="100"
                 minLength="8"
                 pattern={password.value}
@@ -187,7 +195,7 @@ export default function Registration({ onClick }) {
 
               <ul className={b('requirements')}>
                 {REQUIREMENTS.passwordRepeat.map((element, index) => (
-                  <li className={b('rule', { valid: passwordRepeat.value === password.value })} key={index}>{element.rule}</li>
+                  <li className={b('rule', { valid: passwordRepeat.value && passwordRepeat.value === password.value })} key={index}>{element.rule}</li>
                 ))}
               </ul>
             </label>
